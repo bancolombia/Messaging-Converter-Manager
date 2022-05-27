@@ -1,0 +1,10 @@
+dependencies {
+    api project(':wrapper-conversor-api')
+
+
+}
+
+ext {
+    artifactId = 'wrapper-conversor-async'
+    artifactDescription = 'Wrapper Conversor Async'
+}

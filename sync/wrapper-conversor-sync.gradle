@@ -1,0 +1,14 @@
+dependencies {
+    api project(':wrapper-conversor-api')
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    api 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
+
+}
+
+ext {
+    artifactId = 'wrapper-conversor-sync'
+    artifactDescription = 'Wrapper Conversor sync'
+}

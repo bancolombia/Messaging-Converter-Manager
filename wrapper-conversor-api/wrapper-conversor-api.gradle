@@ -1,0 +1,12 @@
+dependencies {
+    implementation 'io.projectreactor:reactor-core:3.4.17'
+    implementation 'org.springframework:spring-context'
+
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker:2.7.0'
+
+}
+
+ext {
+    artifactId = 'wrapper-conversor-api'
+    artifactDescription = 'Wrapper Conversor API'
+}

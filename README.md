@@ -1,15 +1,10 @@
-# Converse Wrapper
+# Conversor Manager
 
-
-Freemarker Converse Wrapper is a wrapper to transform xml to json and json to xml using freemarker and jackson libraries.
+Conversor Manager es una libreria que busca abstraer diferentes implementaciones para la transformacion de mensajeria.
 
 # How to use
-
-
-
 ## Wrapper Conversor Sync
-The library can be imported like this:
-
+se debe importar una de las implementaciones concretas asi:
 ```gradle
 implementation 'com.github.bancolombia:wrapper-conversor-sync-client:<latest-version-here>'
 ```

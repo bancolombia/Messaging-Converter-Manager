@@ -4,7 +4,6 @@ import co.com.bancolombia.api.ConverseDataGateway;
 import co.com.bancolombia.exceptions.ConverseException;
 import co.com.bancolombia.models.ErrorConverse;
 import co.com.bancolombia.models.TemplateTransactionFreemarker;
-import co.com.bancolombia.models.headers.Context;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import freemarker.template.Template;
@@ -53,7 +52,7 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
     }
 
     @Override
-    public <T> T xmlToObject(String xml, Context context, Class<T> target) throws ConverseException {
+    public <T> T xmlToObject(String xml,String transactionCode, Class<T> target) throws ConverseException {
         XmlMapper xmlMapper = new XmlMapper();
         Map<String, Object> root = new HashMap<>();
         StringWriter stringWriter = new StringWriter();
@@ -62,7 +61,7 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
             Map<?,?> value = xmlMapper.readValue(xml, LinkedHashMap.class);
             Map<?,?> status = (Map<?,?>)((Map<?,?>) value.get(HEADERS)).get(STATUS);
 
-            Template template = getTemplate(status, context.getTransactionCode());
+            Template template = getTemplate(status,transactionCode);
             root.put(BUSINESS_RESPONSE, value);
             template.process(root, stringWriter);
 
@@ -81,8 +80,8 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
     }
 
     @Override
-    public String jsonToXml(String json, Context context) throws ConverseException {
-        Template template = getResourceTemplate(context.getTransactionCode()).getTemplateIn();
+    public String jsonToXml(String json, String transactionCode, Object context) throws ConverseException {
+        Template template = getResourceTemplate(transactionCode).getTemplateIn();
         Map<String, Object> root = new HashMap<>();
         root.put(BUSINESS_HEADER, context);
         root.put(DATE_FORMATTER, formatter);

@@ -1,0 +1,10 @@
+dependencies {
+    api project(':conversor-manager-api')
+
+
+}
+
+ext {
+    artifactId = 'freemarker-conversor-async'
+    artifactDescription = 'freemarker Manager conversor async'
+}

@@ -1,0 +1,13 @@
+dependencies {
+    api project(':conversor-manager-api')
+//    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.2'
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2'
+//    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
+
+}
+
+ext {
+    artifactId = 'freemarker-conversor-sync'
+    artifactDescription = 'freemarker Manager conversor sync'
+}

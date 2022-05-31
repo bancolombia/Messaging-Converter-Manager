@@ -1,13 +1,13 @@
-rootProject.name = 'wrapper conversor'
+rootProject.name = 'conversor Manager'
 
-include ':wrapper-conversor-api'
-project(':wrapper-conversor-api').projectDir = file('./wrapper-conversor-api')
+include ':conversor-manager-api'
+project(':conversor-manager-api').projectDir = file('./conversor-manager-api')
 
 include ':commons-conversor'
 project(':commons-conversor').projectDir = file('./commons-conversor')
 
-include ':wrapper-conversor-async-client'
-project(':wrapper-conversor-async-client').projectDir = file('./async')
+include ':freemarker-conversor-async'
+project(':freemarker-conversor-async').projectDir = file('./async/freemarker-conversor-async')
 
-include ':wrapper-conversor-sync-client'
-project(':wrapper-conversor-sync-client').projectDir = file('./sync')
+include ':freemarker-conversor-sync'
+project(':freemarker-conversor-sync').projectDir = file('./sync/freemarker-conversor-sync')

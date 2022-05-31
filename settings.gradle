@@ -1,13 +1,29 @@
-rootProject.name = 'conversor Manager'
+rootProject.name = 'ConversorManager'
+FileTree buildFiles = fileTree(rootDir) {
+    List excludes = gradle.startParameter.projectProperties.get("excludeProjects")?.split(",")
+    include '**/*.gradle', '/*.gradle'
+    exclude 'main.gradle', 'build', '**/gradle', '**/settings.gradle', 'buildSrc', '/build.gradle', '.*', 'out'
+    exclude '**/grails3'
+    if (excludes) {
+        exclude excludes
+    }
+}
 
-include ':conversor-manager-api'
-project(':conversor-manager-api').projectDir = file('./conversor-manager-api')
+String rootDirPath = rootDir.absolutePath + File.separator
+buildFiles.each { File buildFile ->
 
-include ':commons-conversor'
-project(':commons-conversor').projectDir = file('./commons-conversor')
-
-include ':freemarker-conversor-async'
-project(':freemarker-conversor-async').projectDir = file('./async/freemarker-conversor-async')
-
-include ':freemarker-conversor-sync'
-project(':freemarker-conversor-sync').projectDir = file('./sync/freemarker-conversor-sync')
+    boolean isDefaultName = 'build.gradle'.equals(buildFile.name)
+    if (isDefaultName) {
+        String buildFilePath = buildFile.parentFile.absolutePath
+        String projectPath = buildFilePath.replace(rootDirPath, '').replace(File.separator, ':')
+        include projectPath
+    } else {
+        String projectName = buildFile.name.replace('.gradle', '');
+        String projectPath = ':' + projectName;
+        include projectPath
+        def project = findProject("${projectPath}")
+        project.name = projectName
+        project.projectDir = buildFile.parentFile
+        project.buildFileName = buildFile.name
+    }
+}

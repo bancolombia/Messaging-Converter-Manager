@@ -1,7 +1,7 @@
 dependencies {
-//    implementation 'io.projectreactor:reactor-core:3.4.17'
-//    implementation 'org.springframework:spring-context'
-
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
 }
 
 ext {

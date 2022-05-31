@@ -50,17 +50,12 @@ subprojects {
     }
 
     dependencies {
-        implementation 'io.projectreactor:reactor-core'
-        implementation 'org.springframework.boot:spring-boot-starter-freemarker'
-        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.2'
-        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2'
-        implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
+
 
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
         testCompileOnly 'org.projectlombok:lombok'
-        testImplementation 'io.projectreactor:reactor-test'
         testImplementation platform('org.junit:junit-bom:5.7.0')
         testImplementation 'org.junit.jupiter:junit-jupiter-engine'
         testImplementation 'org.mockito:mockito-junit-jupiter:3.7.7'

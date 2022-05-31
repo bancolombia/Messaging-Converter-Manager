@@ -3,7 +3,6 @@ package co.com.bancolombia.commons.utils;
 import co.com.bancolombia.exceptions.ConverseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
-import org.springframework.core.convert.ConversionException;
 
 import java.io.IOException;
 

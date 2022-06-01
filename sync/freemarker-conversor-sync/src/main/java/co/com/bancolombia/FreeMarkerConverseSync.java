@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,64 +27,55 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
     private static final String DATE_FORMATTER = "dateFormatter";
     private static final String BUSINESS_BODY = "businessBody";
     private static final String BUSINESS_RESPONSE = "businessResponse";
-    private static final String HEADERS = "HEADERRS";
-    private static final String STATUS = "STATUS";
-    private static final String CODE = "CODE";
-    private static final String OK_CODE = "000";
+
 
     private final TemplateTransactionFreemarker templateTransaction;
     private final ObjectMapper objectMapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
 
-
-    private Template getTemplate(Map<?, ?> status, String transactionCode) throws IOException {
-        return isOkTransaction(status) ? getResourceTemplate
-                (transactionCode).getTemplateOut() : getResourceTemplate
-                (transactionCode).getTemplateError();
+    private Template getTemplate(Map<?, ?> response, TemplateTransactionFreemarker.ResourceTemplate resourceTemplate) throws IOException {
+        return resourceTemplate.getTemplateValidations().isOkResponse(response) ? resourceTemplate.getTemplateOut() : resourceTemplate.getTemplateError();
     }
 
-    private boolean isOkTransaction(Map<?, ?> status) {
-        return status.get(CODE).equals(OK_CODE);
+    private TemplateTransactionFreemarker.ResourceTemplate getResourceTemplate(String templateCode) {
+        return templateTransaction.get(templateCode);
     }
 
-    private TemplateTransactionFreemarker.ResourceTemplate getResourceTemplate(String transactionCode) {
-        return templateTransaction.get(transactionCode);
-    }
-
+    @SneakyThrows
     @Override
-    public <T> T xmlToObject(String xml,String transactionCode, Class<T> target) throws ConverseException {
+    public <T> T xmlToObject(String xml, String templateCode, Class<T> target) {
         XmlMapper xmlMapper = new XmlMapper();
         Map<String, Object> root = new HashMap<>();
         StringWriter stringWriter = new StringWriter();
 
         try {
-            Map<?,?> value = xmlMapper.readValue(xml, LinkedHashMap.class);
-            Map<?,?> status = (Map<?,?>)((Map<?,?>) value.get(HEADERS)).get(STATUS);
+            Map<?, ?> response = xmlMapper.readValue(xml, LinkedHashMap.class);
 
-            Template template = getTemplate(status,transactionCode);
-            root.put(BUSINESS_RESPONSE, value);
-            template.process(root, stringWriter);
+            TemplateTransactionFreemarker.ResourceTemplate resourceTemplate = getResourceTemplate(templateCode);
+            Template templateToUse = getTemplate(response, resourceTemplate);
 
+            root.put(BUSINESS_RESPONSE, response);
+            templateToUse.process(root, stringWriter);
 
-            if(!isOkTransaction(status)) {
-                ErrorConverse errorFreeMarker =objectMapper.readValue(stringWriter.toString(), ErrorConverse.class);
-                    throw new  ConverseException( errorFreeMarker);
+            if (!resourceTemplate.getTemplateValidations().isOkResponse(response)) {
+                ErrorConverse errorFreeMarker = objectMapper.readValue(stringWriter.toString(), ErrorConverse.class);
+                throw new ConverseException(errorFreeMarker);
             }
             return objectMapper.readValue(stringWriter.toString(), target);
-
-
-
         } catch (IOException | TemplateException e) {
-            throw new ConverseException(e, "Parsing Error");
+            throw new ConverseException(ErrorConverse.builder().error("Parsing Error xmlToObject").reason(e.getMessage()).build());
         }
     }
 
+    @SneakyThrows
     @Override
-    public String jsonToXml(String json, String transactionCode, Object context) throws ConverseException {
-        Template template = getResourceTemplate(transactionCode).getTemplateIn();
+    public String jsonToXml(String json, String templateCode, Object... context) {
+        Template template = getResourceTemplate(templateCode).getTemplateIn();
         Map<String, Object> root = new HashMap<>();
-        root.put(BUSINESS_HEADER, context);
+        if (context.length > 0) {
+            root.put(BUSINESS_HEADER, context[0]);
+        }
         root.put(DATE_FORMATTER, formatter);
         StringWriter stringWriter = new StringWriter();
 
@@ -93,7 +85,7 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
             return stringWriter.toString();
 
         } catch (IOException | TemplateException e) {
-            throw new ConverseException(e, "Parsing Error");
+            throw new ConverseException(ErrorConverse.builder().error("Parsing Error jsonToXml").reason(e.getMessage()).build());
         }
     }
 }

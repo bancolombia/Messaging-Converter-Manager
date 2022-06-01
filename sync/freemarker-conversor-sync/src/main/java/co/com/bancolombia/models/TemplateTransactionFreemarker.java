@@ -1,6 +1,7 @@
 package co.com.bancolombia.models;
 
 
+import co.com.bancolombia.api.TemplateValidations;
 import freemarker.template.Template;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class TemplateTransactionFreemarker extends TreeMap<String, TemplateTrans
         private Template templateIn;
         private Template templateOut;
         private Template templateError;
+        private TemplateValidations templateValidations;
 
     }
 

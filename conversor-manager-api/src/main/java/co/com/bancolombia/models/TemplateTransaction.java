@@ -1,5 +1,6 @@
 package co.com.bancolombia.models;
 
+import co.com.bancolombia.api.TemplateValidations;
 import lombok.*;
 
 import java.util.TreeMap;
@@ -10,7 +11,7 @@ import java.util.TreeMap;
 @NoArgsConstructor
 public class TemplateTransaction extends TreeMap<String, TemplateTransaction.ResourceTemplate> {
 
-    @Builder
+    @Builder(toBuilder = true)
     @Data
     @Getter
     @NoArgsConstructor
@@ -22,6 +23,7 @@ public class TemplateTransaction extends TreeMap<String, TemplateTransaction.Res
         private String templateIn;
         private String templateOut;
         private String templateError;
+        private TemplateValidations templateValidations;
 
     }
 

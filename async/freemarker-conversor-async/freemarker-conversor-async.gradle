@@ -1,11 +1,11 @@
 dependencies {
     api project(':conversor-manager-api')
+    api project(':commons-conversor')
+    api project(':freemarker-conversor-sync')
     implementation 'io.projectreactor:reactor-core'
     testImplementation 'io.projectreactor:reactor-test'
+    compileOnly 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
-    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml'
 }
 
 ext {

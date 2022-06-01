@@ -1,4 +1,5 @@
 rootProject.name = 'ConversorManager'
+
 FileTree buildFiles = fileTree(rootDir) {
     List excludes = gradle.startParameter.projectProperties.get("excludeProjects")?.split(",")
     include '**/*.gradle', '/*.gradle'

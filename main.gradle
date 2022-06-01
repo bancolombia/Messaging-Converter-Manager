@@ -84,77 +84,76 @@ subprojects {
         ]
     }
 
-    if (toPublish.split(',').contains(it.name)) {
-        apply plugin: "maven-publish"
-        apply plugin: "signing"
+//    if (toPublish.split(',').contains(it.name)) {
+    apply plugin: "maven-publish"
+    apply plugin: "signing"
 
-        tasks.named("jar") {
-            enabled = true
-            archiveClassifier = ''
+    tasks.named("jar") {
+        enabled = true
+        archiveClassifier = ''
+    }
+
+    bootJar {
+        enabled = false
+    }
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    javadoc {
+        if (JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
         }
+    }
+    javadoc.failOnError = false
 
-        bootJar {
-            enabled = false
-        }
+    tasks.withType(GenerateModuleMetadata) {
+        enabled = false
+    }
 
-        java {
-            withJavadocJar()
-            withSourcesJar()
-        }
-
-        javadoc {
-            if (JavaVersion.current().isJava9Compatible()) {
-                options.addBooleanOption('html5', true)
-            }
-        }
-        javadoc.failOnError = false
-
-        tasks.withType(GenerateModuleMetadata) {
-            enabled = false
-        }
-
-        publishing {
-            publications {
-                mavenJava(MavenPublication) {
-
-                    pom {
-                        name = 'ConversorManager'
-                        description = 'Conversor Manager is a set of abstractions and  implementations to transform xml to json and json to xml using freemarker and jackson libraries.\n'
-                        url = ''
-                        licenses {
-                            license {
-                                name = "MIT License"
-                                url = "https://opensource.org/licenses/mit-license.php"
-                                distribution = "repo"
-                            }
-                        }
-                        developers {
-                            developer {
-                                id = "sagarci"
-                                name = "Santiago Garcia Gil"
-                                email = "sagarci@bancolombia.com.co"
-                            }
-                        }
-                        scm {
-                            url = ""
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                pom {
+                    name = 'ConversorManager'
+                    description = 'Conversor Manager is a set of abstractions and  implementations to transform xml to json and json to xml using freemarker and jackson libraries.\n'
+                    url = ''
+                    licenses {
+                        license {
+                            name = "MIT License"
+                            url = "https://opensource.org/licenses/mit-license.php"
+                            distribution = "repo"
                         }
                     }
-
-                    from components.java
-
-                    groupId = groupId
-                    artifactId = artifactId
-                    version = project.property('version')
+                    developers {
+                        developer {
+                            id = "sagarci"
+                            name = "Santiago Garcia Gil"
+                            email = "sagarci@bancolombia.com.co"
+                        }
+                    }
+                    scm {
+                        url = ""
+                    }
                 }
-            }
-        }
 
-        if (project.hasProperty('signing.keyId')) {
-            signing {
-                sign publishing.publications.mavenJava
+                from components.java
+
+                groupId = groupId
+                artifactId = artifactId
+                version = project.property('version')
             }
         }
     }
+
+    if (project.hasProperty('signing.keyId')) {
+        signing {
+            sign publishing.publications.mavenJava
+        }
+    }
+//    }
 
 }
 

@@ -1,5 +1,8 @@
 dependencies {
     api project(':conversor-manager-api')
+    api project(':commons-conversor')
+
+    compileOnly 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind'

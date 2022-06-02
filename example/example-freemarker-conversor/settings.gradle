@@ -1,4 +1,4 @@
-rootProject.name = 'example-freemarker-conversor'
+rootProject.name = 'example-freemarker-converter'
 
 include ':app-service'
 include ':model'

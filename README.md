@@ -1,39 +1,94 @@
-# Conversor Manager
+# Messaging Converter Manager
 
-Conversor Manager es una libreria que busca abstraer diferentes implementaciones para la transformacion de mensajeria.
-
+Messaging Converter Manager is a library that aims to abstract different implementations for messaging transformation.
 # How to use
-## Wrapper Conversor Sync
-se debe importar una de las implementaciones concretas asi:
-```gradle
-implementation 'com.github.bancolombia:wrapper-conversor-sync-client:<latest-version-here>'
-```
-## Wrapper Conversor Async (Compatible with Reactor)
-
 The library can be imported like this:
-
 ```gradle
-implementation 'com.github.bancolombia:wrapper-conversor-async-client:<latest-version-here>'
-```
-```gradle
+   //Async (Compatible with Project Reactor)
+   implementation 'co.com.bancolombia:freemarker-converter-async:<latest-version-here>'
+   //Sync
+   implementation 'co.com.bancolombia:freemarker-converter-sync:<latest-version-here>'
 
-dependencies {
-// Reactor Core is required!
-implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.17'
-// wrapper-conversor-async    
-implementation 'com.github.bancolombia:wrapper-conversor-async-client:0.1.0'
-}
 ```
 
 
-### Define your configuration
+## Define your configuration
+TemplateTransaction is a map of ResourceTemplate the key is a unique identifier for this template.
 
-#### Configurations
+Is required to create a bean of **TemplateTransaction** with at least the required fields
+
+| Field               | Required | Description                                                                                                      |
+|---------------------|----------|------------------------------------------------------------------------------------------------------------------|
+| transactionName     | No       | name of the transaction to be resolved by the template                                                           |
+| channel             | No       | name of the potential consumers of the template                                                                  |
+| transaction         | No       | transaction code to be resolved                                                                                  |
+| templateIn          | **Yes**  | template used to transform the message into the function _jsonToXml_                                             |
+| templateOut         | **Yes**  | template used to transform the message into the function _xmlToObject_ when the templateValidations return true  |
+| templateError       | **Yes**  | template used to transform the message into the function _xmlToObject_ when the templateValidations return false |
+| templateValidations | **Yes**  | interface used to outsource decision making in messaging transformation                                          |
+
+**templateValidations** is an interface to have one function
+```java
+boolean isOkResponse(Map<?, ?> response);
+```
+Example:
+```java
+    @Bean
+    public TemplateTransaction templateTransaction() {
+        TemplateValidations templateValidations = new TemplateValidations() {
+            private static final String HEADERS = "HEADERS";
+            private static final String STATUS = "status";
+            private static final String CODE = "code";
+            private static final String OK_CODE = "200";
+
+            @Override
+            public boolean isOkResponse(Map<?, ?> response) {
+                return ((Map<?, ?>)  response.get(STATUS)).get(CODE).equals(OK_CODE);
+            }
+        };
+        TemplateTransaction templateTransaction = TemplateTransaction.builder().build();
+        TemplateTransaction.ResourceTemplate resourceTemplate = TemplateTransaction.ResourceTemplate.builder()
+                .templateValidations(templateValidations)
+                .templateIn("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><number>123</number>")
+                .templateOut("{\"task\":{\"id\": \"123\",\"description\": \"this is a description\", \"name\":\"title\"}}")
+                .templateError("{\"reason\":\"401\",\"domain\":\"na\",\"code\":\"401\",\"message\":\"error message\"}")
+                .build();
+        templateTransaction.put("100", resourceTemplate);
+        return templateTransaction;
+```
+
+Create the connector:
+```java
+//Async (Compatible with Project Reactor)
+private final FreeMarkerConverseAsync freeMarkerConverse;
+//Sync
+private final FreeMarkerConverseSync freeMarkerConverse;
+```
 
 
-## Get the json by Xml:
+convert Json to Xml by template:
+```java
+freeMarkerConverse.jsonToXml(json, templateCode, context);
+//or without context
+freeMarkerConverse.jsonToXml(json, templateCode);
+```
+convert Xml to object by template :
+```java
+freeMarkerConverse.xmlToObject(xml, templateCode, Object.class)
+```
+## How can I contribute ?
 
-## Get the xml by Json:
+Great !!:
+
+    Clone this repo
+    Create a new feature branch
+    Add new features or improvements
+    Send us a Pull Request
+
+### To Do
+
+- New implementantions of this abstranction with other technologies.
+
 
 
 

@@ -1,6 +1,6 @@
 dependencies {
-    api project(':conversor-manager-api')
-    api project(':commons-conversor')
+    api project(':converter-manager-api')
+    api project(':commons-converter')
 
     compileOnly 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
@@ -11,6 +11,6 @@ dependencies {
 }
 
 ext {
-    artifactId = 'freemarker-conversor-sync'
-    artifactDescription = 'freemarker Manager conversor sync'
+    artifactId = 'freemarker-converter-sync'
+    artifactDescription = 'Freemarker manager converter sync'
 }

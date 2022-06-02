@@ -1,5 +1,5 @@
 dependencies {
-    api project(':conversor-manager-api')
+    api project(':converter-manager-api')
     compileOnly 'org.springframework.boot:spring-boot-starter'
 
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
@@ -7,6 +7,6 @@ dependencies {
 }
 
 ext {
-    artifactId = 'commons-conversor'
-    artifactDescription = 'Commons Conversor'
+    artifactId = 'commons-converter'
+    artifactDescription = 'Commons Converter'
 }

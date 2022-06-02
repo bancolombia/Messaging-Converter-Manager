@@ -1,7 +1,7 @@
 dependencies {
-    api project(':conversor-manager-api')
-    api project(':commons-conversor')
-    api project(':freemarker-conversor-sync')
+    api project(':converter-manager-api')
+    api project(':commons-converter')
+    api project(':freemarker-converter-sync')
     implementation 'io.projectreactor:reactor-core'
     testImplementation 'io.projectreactor:reactor-test'
     compileOnly 'org.springframework.boot:spring-boot-starter'
@@ -9,6 +9,6 @@ dependencies {
 }
 
 ext {
-    artifactId = 'freemarker-conversor-async'
-    artifactDescription = 'freemarker Manager conversor async'
+    artifactId = 'freemarker-converter-async'
+    artifactDescription = 'freemarker Manager converter async'
 }

@@ -9,7 +9,7 @@ dependencies {
     implementation project(':usecase')
     implementation 'org.springframework.boot:spring-boot-starter'
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
-    implementation 'co.com.bancolombia:freemarker-conversor-async:0.1.0'
+    implementation 'co.com.bancolombia:freemarker-converter-async:0.1.0'
 
 
 }

@@ -1,9 +1,9 @@
-rootProject.name = 'ConversorManager'
+rootProject.name = 'MessagingConverterManager'
 
 FileTree buildFiles = fileTree(rootDir) {
     List excludes = gradle.startParameter.projectProperties.get("excludeProjects")?.split(",")
     include '**/*.gradle', '/*.gradle'
-    exclude 'main.gradle', 'build', '**/gradle', '**/settings.gradle', 'buildSrc', '/build.gradle', '.*', 'out'
+    exclude 'main.gradle', 'build', '**/gradle', '**/settings.gradle', 'buildSrc', '/build.gradle', '.*', 'out','example'
     exclude '**/grails3'
     if (excludes) {
         exclude excludes

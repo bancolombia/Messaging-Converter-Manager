@@ -117,8 +117,8 @@ subprojects {
         publications {
             mavenJava(MavenPublication) {
                 pom {
-                    name = 'ConversorManager'
-                    description = 'Conversor Manager is a set of abstractions and  implementations to transform xml to json and json to xml using freemarker and jackson libraries.\n'
+                    name = 'MessagingConverterManager'
+                    description = 'Messaging Converter Manager is a set of abstractions and  implementations to transform xml to json and json to xml using freemarker and jackson libraries.\n'
                     url = ''
                     licenses {
                         license {

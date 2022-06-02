@@ -1,8 +1,0 @@
-dependencies {
-    implementation 'io.projectreactor:reactor-core'
-}
-
-ext {
-    artifactId = 'conversor-manager-api'
-    artifactDescription = 'Conversor Manager API'
-}

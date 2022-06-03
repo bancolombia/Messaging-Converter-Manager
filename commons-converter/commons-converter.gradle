@@ -1,0 +1,12 @@
+dependencies {
+    api project(':converter-manager-api')
+    compileOnly 'org.springframework.boot:spring-boot-starter'
+
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
+}
+
+ext {
+    artifactId = 'commons-converter'
+    artifactDescription = 'Commons Converter'
+}

@@ -45,13 +45,13 @@ class FreeMarkerConverseSyncTest {
     }
 
     @Test
-    public void xmlToObjectTemplateOut() {
+    void xmlToObjectTemplateOut() {
         assertEquals(TestClass.class, freeMarkerConverseSync.xmlToObject("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><status code=\"200\" message=\"TRANSACCION EXITOSA\" severity=\"info\"/><task><id>123</id><description>this is a description</description><title>title</title></task></root>", "1", TestClass.class).getClass());
     }
 
 
     @Test
-    public void xmlToObjectTemplateError() {
+    void xmlToObjectTemplateError() {
         assertThrows(ConverseException.class, () -> freeMarkerConverseSync.xmlToObject("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><status code=\"200\" message=\"TRANSACCION EXITOSA\" severity=\"info\"/><task><id>123</id><description>this is a description</description><title>title</title></task></root>", "2", TestClass.class));
     }
 

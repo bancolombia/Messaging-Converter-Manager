@@ -13,13 +13,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Configuration
-public class TemplateTransactionInitializerTest {
+class TemplateTransactionInitializerTest {
     TemplateTransactionInitializer initializer = new TemplateTransactionInitializer();
 
     @Test
-    public void templateTransactionFreemarker() {
-
-
+    void templateTransactionFreemarker() {
         TemplateValidations templateValidations = new TemplateValidations() {
             private static final String STATUS = "status";
             private static final String CODE = "code";
@@ -31,15 +29,7 @@ public class TemplateTransactionInitializerTest {
             }
         };
         TemplateTransaction templateTransaction = TemplateTransaction.builder().build();
-        TemplateTransaction.ResourceTemplate resourceTemplate = TemplateTransaction.ResourceTemplate.builder()
-                .transactionName("todo tasks")
-                .templateValidations(templateValidations)
-                .channel("channel test")
-                .transaction("100")
-                .templateIn("template in")
-                .templateOut("template out")
-                .templateError("template error")
-                .build();
+        TemplateTransaction.ResourceTemplate resourceTemplate = TemplateTransaction.ResourceTemplate.builder().transactionName("todo tasks").templateValidations(templateValidations).channel("channel test").transaction("100").templateIn("template in").templateOut("template out").templateError("template error").build();
         templateTransaction.put("100", resourceTemplate);
         templateTransaction.put("200", resourceTemplate);
         Config config = new Config();

@@ -117,8 +117,8 @@ subprojects {
             mavenJava(MavenPublication) {
                 pom {
                     name = 'MessagingConverterManager'
-                    description = 'Messaging Converter Manager is a set of abstractions and  implementations to transform xml to json and json to xml using freemarker and jackson libraries.\n'
-                    url = ''
+                    description = 'Messaging Converter Manager is a library that aims to abstract different implementations for messaging transformation.'
+                    url = 'https://github.com/bancolombia/Messaging-Converter-Manager'
                     licenses {
                         license {
                             name = "MIT License"
@@ -134,7 +134,7 @@ subprojects {
                         }
                     }
                     scm {
-                        url = ""
+                        url = "git@github.com:bancolombia/Messaging-Converter-Manager.git"
                     }
                 }
 

@@ -84,7 +84,6 @@ subprojects {
         ]
     }
 
-//    if (toPublish.split(',').contains(it.name)) {
     apply plugin: "maven-publish"
     apply plugin: "signing"
 
@@ -153,7 +152,6 @@ subprojects {
             sign publishing.publications.mavenJava
         }
     }
-//    }
 
 }
 

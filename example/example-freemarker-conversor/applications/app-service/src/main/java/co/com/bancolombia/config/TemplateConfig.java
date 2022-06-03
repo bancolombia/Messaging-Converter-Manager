@@ -15,7 +15,6 @@ public class TemplateConfig {
     @Bean
     public TemplateTransaction templateTransaction() {
         TemplateValidations templateValidations = new TemplateValidations() {
-            private static final String HEADERS = "HEADERS";
             private static final String STATUS = "status";
             private static final String CODE = "code";
             private static final String OK_CODE = "200";

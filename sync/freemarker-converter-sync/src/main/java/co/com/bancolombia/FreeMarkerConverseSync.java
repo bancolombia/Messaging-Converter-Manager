@@ -33,13 +33,25 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
     private final ObjectMapper objectMapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
+    @SneakyThrows
+    @Override
+    public String jsonToXml(String json, String templateCode, Object... context) {
+        Template template = getResourceTemplate(templateCode).getTemplateIn();
+        Map<String, Object> root = new HashMap<>();
+        if (context.length > 0) {
+            root.put(BUSINESS_HEADER, context[0]);
+        }
+        root.put(DATE_FORMATTER, formatter);
+        StringWriter stringWriter = new StringWriter();
 
-    private Template getTemplate(Map<?, ?> response, TemplateTransactionFreemarker.ResourceTemplate resourceTemplate) throws IOException {
-        return resourceTemplate.getTemplateValidations().isOkResponse(response) ? resourceTemplate.getTemplateOut() : resourceTemplate.getTemplateError();
-    }
+        try {
+            root.put(BUSINESS_BODY, objectMapper.readValue(json, Map.class));
+            template.process(root, stringWriter);
+            return stringWriter.toString();
 
-    private TemplateTransactionFreemarker.ResourceTemplate getResourceTemplate(String templateCode) {
-        return templateTransaction.get(templateCode);
+        } catch (IOException | TemplateException e) {
+            throw new ConverseException(ErrorConverse.builder().error("Parsing Error jsonToXml").reason(e.getMessage()).build());
+        }
     }
 
     @SneakyThrows
@@ -68,24 +80,12 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
         }
     }
 
-    @SneakyThrows
-    @Override
-    public String jsonToXml(String json, String templateCode, Object... context) {
-        Template template = getResourceTemplate(templateCode).getTemplateIn();
-        Map<String, Object> root = new HashMap<>();
-        if (context.length > 0) {
-            root.put(BUSINESS_HEADER, context[0]);
-        }
-        root.put(DATE_FORMATTER, formatter);
-        StringWriter stringWriter = new StringWriter();
-
-        try {
-            root.put(BUSINESS_BODY, objectMapper.readValue(json, Map.class));
-            template.process(root, stringWriter);
-            return stringWriter.toString();
-
-        } catch (IOException | TemplateException e) {
-            throw new ConverseException(ErrorConverse.builder().error("Parsing Error jsonToXml").reason(e.getMessage()).build());
-        }
+    private TemplateTransactionFreemarker.ResourceTemplate getResourceTemplate(String templateCode) {
+        return templateTransaction.get(templateCode);
     }
+
+    private Template getTemplate(Map<?, ?> response, TemplateTransactionFreemarker.ResourceTemplate resourceTemplate) throws IOException {
+        return resourceTemplate.getTemplateValidations().isOkResponse(response) ? resourceTemplate.getTemplateOut() : resourceTemplate.getTemplateError();
+    }
+
 }

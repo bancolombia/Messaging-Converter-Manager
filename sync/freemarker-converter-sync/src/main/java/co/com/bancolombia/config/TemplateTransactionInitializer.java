@@ -31,6 +31,7 @@ public class TemplateTransactionInitializer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         });
         return templateTransactionFreemarker;
     }

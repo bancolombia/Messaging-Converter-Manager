@@ -6,9 +6,10 @@ import lombok.Getter;
 
 @Getter
 public class ConverseException extends Exception {
-    private  String errorCode;
+    private final String errorCode;
     public ConverseException(Throwable cause,String message) {
         super(message,cause);
+        this.errorCode = message;
     }
 
     public ConverseException( ErrorConverse errorMessage) {

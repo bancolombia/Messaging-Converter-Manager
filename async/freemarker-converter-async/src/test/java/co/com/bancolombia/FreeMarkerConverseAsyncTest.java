@@ -2,7 +2,6 @@ package co.com.bancolombia;
 
 import co.com.bancolombia.commons.config.Config;
 import co.com.bancolombia.commons.config.FreeMarkerConfig;
-import co.com.bancolombia.exceptions.ConverseException;
 import co.com.bancolombia.models.TemplateTransactionFreemarker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.template.Template;
@@ -22,10 +21,9 @@ import java.io.StringReader;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
-public class FreeMarkerConverseAsyncTest {
+class FreeMarkerConverseAsyncTest {
 
     FreeMarkerConverseAsync freeMarkerConverseAsync;
 
@@ -46,26 +44,19 @@ public class FreeMarkerConverseAsyncTest {
     }
 
     @Test
-    public void xmlToObjectTemplateOut() {
+    void xmlToObjectTemplateOut() {
         assertEquals(TestClass.class, freeMarkerConverseAsync.xmlToObject("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><status code=\"200\" message=\"TRANSACCION EXITOSA\" severity=\"info\"/><task><id>123</id><description>this is a description</description><title>title</title></task></root>", "1", TestClass.class).block().getClass());
     }
 
-
-
-
-
     @Test
-    public void jsonToXmlWithoutContext() {
+    void jsonToXmlWithoutContext() {
         assertEquals("template in", freeMarkerConverseAsync.jsonToXml("{\"field1\":\"value1\"}", "1").block());
-
     }
 
     @Test
-    public void jsonToXmlWithContext() {
+    void jsonToXmlWithContext() {
         assertEquals("template in", freeMarkerConverseAsync.jsonToXml("{\"field1\":\"value1\"}", "1", new Object()).block());
-
     }
-
 
 
     @AllArgsConstructor

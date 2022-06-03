@@ -6,16 +6,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ConverseExceptionTest {
+class ConverseExceptionTest {
 
     @Test
-    public void generateExceptionWithErrorConverse() {
+    void generateExceptionWithErrorConverse() {
         ConverseException ex = new ConverseException(ErrorConverse.builder().reason("My error").code("").error("").domain("").build());
         assertEquals("My error", ex.getMessage());
     }
 
     @Test
-    public void generateExceptionWithMessage() {
+    void generateExceptionWithMessage() {
         Throwable cause = new RuntimeException();
         ConverseException ex = new ConverseException(cause, "My error");
         assertEquals("My error", ex.getMessage());

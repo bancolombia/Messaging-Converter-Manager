@@ -1,12 +1,9 @@
 package co.com.bancolombia.config;
 
 import co.com.bancolombia.commons.config.FreeMarkerConfig;
-import co.com.bancolombia.exceptions.ConverseException;
-import co.com.bancolombia.models.ErrorConverse;
 import co.com.bancolombia.models.TemplateTransaction;
 import co.com.bancolombia.models.TemplateTransactionFreemarker;
 import freemarker.template.Template;
-import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +13,6 @@ import java.util.UUID;
 
 @Configuration
 public class TemplateTransactionInitializer {
-    @SneakyThrows
     @Bean
     public TemplateTransactionFreemarker templateTransactionFreemarker(TemplateTransaction templateTransaction, FreeMarkerConfig freeMarkerConfig) {
         TemplateTransactionFreemarker templateTransactionFreemarker = new TemplateTransactionFreemarker();
@@ -32,7 +28,7 @@ public class TemplateTransactionInitializer {
                         .templateValidations(resourceTemplate.getTemplateValidations())
                         .build());
             } catch (IOException e) {
-                throw new ConverseException(ErrorConverse.builder().error("creating bean templateTransactionFreemarker").reason(e.getMessage()).build());
+                e.printStackTrace();
             }
 
         });

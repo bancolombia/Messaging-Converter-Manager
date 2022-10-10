@@ -69,12 +69,8 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
 
             root.put(BUSINESS_RESPONSE, response);
             templateToUse.process(root, stringWriter);
-
-            if (!resourceTemplate.getTemplateValidations().isOkResponse(response)) {
-                ErrorConverse errorFreeMarker = objectMapper.readValue(stringWriter.toString(), ErrorConverse.class);
-                throw new ConverseException(errorFreeMarker);
-            }
             return objectMapper.readValue(stringWriter.toString(), target);
+
         } catch (IOException | TemplateException e) {
             throw new ConverseException(ErrorConverse.builder().error("Parsing Error xmlToObject").reason(e.getMessage()).build());
         }

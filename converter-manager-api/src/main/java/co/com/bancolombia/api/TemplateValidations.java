@@ -6,6 +6,6 @@ import java.util.Map;
 
 public interface TemplateValidations {
     boolean isOkResponseXmlToObject(Map<?, ?> object);
-    boolean isOkResponseJsonToXml(StringWriter xml);
+    boolean isOkResponseJsonToXml(String json);
 
 }

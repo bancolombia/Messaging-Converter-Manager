@@ -47,7 +47,7 @@ class FreeMarkerConverseAsyncTest {
             }
 
             @Override
-            public boolean isOkResponseJsonToXml(StringWriter xml) {
+            public boolean isOkResponseJsonToXml(String json) {
                 return true;
             }
         };
@@ -59,7 +59,7 @@ class FreeMarkerConverseAsyncTest {
             }
 
             @Override
-            public boolean isOkResponseJsonToXml(StringWriter xml) {
+            public boolean isOkResponseJsonToXml(String json) {
                 return false;
             }
         };

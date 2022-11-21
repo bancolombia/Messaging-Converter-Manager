@@ -38,9 +38,17 @@ class FreeMarkerConverseSyncTest {
 
         freeMarkerConverseSync = new FreeMarkerConverseSync(templateTransactionFreemarker, objectMapper);
         FreeMarkerConfig freeMarkerConfig = new Config().freeMarkerConfig();
-        Template templateIn = new Template(UUID.randomUUID().toString(), new StringReader("template in"), freeMarkerConfig);
-        Template templateOut = new Template(UUID.randomUUID().toString(), new StringReader("{\"field1\":\"value1\"}"), freeMarkerConfig);
-        Template templateError = new Template(UUID.randomUUID().toString(), new StringReader("{\"reason\":\"401\",\"domain\":\"na\",\"code\":\"401\",\"error \":\"error message\"}"), freeMarkerConfig);
+        Template templateJsonToXml = new Template(UUID.randomUUID().toString(), new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><field1>value1</field1>"), freeMarkerConfig);
+        Template templateJsonToXmlError = new Template(UUID.randomUUID().toString(), new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
+                "<root>\n" +
+                "  <reason>401</reason>\n" +
+                "  <domain>na</domain>\n" +
+                "  <code>401</code>\n" +
+                "  <error>error message</error>\n" +
+                "</root>"), freeMarkerConfig);
+
+        Template templateXmlToJson = new Template(UUID.randomUUID().toString(), new StringReader("{\"field1\":\"value1\"}"), freeMarkerConfig);
+        Template templateXmlToJsonError = new Template(UUID.randomUUID().toString(), new StringReader("{\"reason\":\"401\",\"domain\":\"na\",\"code\":\"401\",\"error\":\"error message\"}"), freeMarkerConfig);
         TemplateValidations templateValidationsTrue = new TemplateValidations() {
             @Override
             public boolean isOkResponseXmlToObject(Map<?, ?> object) {
@@ -48,7 +56,7 @@ class FreeMarkerConverseSyncTest {
             }
 
             @Override
-            public boolean isOkResponseJsonToXml(StringWriter xml) {
+            public boolean isOkResponseJsonToXml(String json) {
                 return true;
             }
         };
@@ -60,18 +68,18 @@ class FreeMarkerConverseSyncTest {
             }
 
             @Override
-            public boolean isOkResponseJsonToXml(StringWriter xml) {
+            public boolean isOkResponseJsonToXml(String json) {
                 return false;
             }
         };
-        TemplateTransactionFreemarker.ResourceTemplate resourceTemplateOut = TemplateTransactionFreemarker.ResourceTemplate.builder().templateJsonToXml(templateIn).templateXmlToJson(templateOut).templateXmlToJsonError(templateError).templateValidations(templateValidationsTrue).build();
-        TemplateTransactionFreemarker.ResourceTemplate resourceTemplateError = TemplateTransactionFreemarker.ResourceTemplate.builder().templateJsonToXml(templateIn).templateXmlToJson(templateOut).templateXmlToJsonError(templateError).templateValidations(templateValidationsFalse).build();
+        TemplateTransactionFreemarker.ResourceTemplate resourceTemplateOut = TemplateTransactionFreemarker.ResourceTemplate.builder().templateJsonToXml(templateJsonToXml).templateJsonToXmlError(templateJsonToXmlError).templateXmlToJson(templateXmlToJson).templateXmlToJsonError(templateXmlToJsonError).templateValidations(templateValidationsTrue).build();
+        TemplateTransactionFreemarker.ResourceTemplate resourceTemplateError = TemplateTransactionFreemarker.ResourceTemplate.builder().templateJsonToXml(templateJsonToXml).templateJsonToXmlError(templateJsonToXmlError).templateXmlToJson(templateXmlToJson).templateXmlToJsonError(templateXmlToJsonError).templateValidations(templateValidationsFalse).build();
         Mockito.lenient().when(templateTransactionFreemarker.get("1")).thenReturn(resourceTemplateOut);
         Mockito.lenient().when(templateTransactionFreemarker.get("2")).thenReturn(resourceTemplateError);
     }
 
     @Test
-    void xmlToObjectTemplateOut() {
+    void xmlToObjectTemplate() {
         assertEquals(TestClass.class, freeMarkerConverseSync.xmlToObject("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><status code=\"200\" message=\"TRANSACCION EXITOSA\" severity=\"info\"/><task><id>123</id><description>this is a description</description><title>title</title></task></root>", "1", TestClass.class).getClass());
     }
 
@@ -88,13 +96,19 @@ class FreeMarkerConverseSyncTest {
 
     @Test
     void jsonToXmlWithoutContext() {
-        assertEquals("template in", freeMarkerConverseSync.jsonToXml("{\"field1\":\"value1\"}", "1"));
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><field1>value1</field1>", freeMarkerConverseSync.jsonToXml("{\"field1\":\"value1\"}", "1"));
 
     }
 
     @Test
     void jsonToXmlWithContext() {
-        assertEquals("template in", freeMarkerConverseSync.jsonToXml("{\"field1\":\"value1\"}", "1", new Object()));
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><field1>value1</field1>", freeMarkerConverseSync.jsonToXml("{\"field1\":\"value1\"}", "1", new Object()));
+
+    }
+    @Test
+    void jsonToXmlWithContextError() {
+        assertThrows(ConverseException.class, () -> freeMarkerConverseSync.jsonToXml("{\"field1\":\"value1\"}", "2", new Object()));
+
 
     }
 

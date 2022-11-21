@@ -28,7 +28,7 @@ class TemplateTransactionInitializerTest {
             }
 
             @Override
-            public boolean isOkResponseJsonToXml(StringWriter xml) {
+            public boolean isOkResponseJsonToXml(String json) {
                 return true;
             }
         };

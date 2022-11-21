@@ -36,7 +36,9 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
     @SneakyThrows
     @Override
     public String jsonToXml(String json, String templateCode, Object... context) {
-        Template template = getResourceTemplate(templateCode).getTemplateIn();
+        TemplateTransactionFreemarker.ResourceTemplate resourceTemplate = getResourceTemplate(templateCode);
+
+        Template template = resourceTemplate.getTemplateJsonToXml();
         Map<String, Object> root = new HashMap<>();
         if (context.length > 0) {
             root.put(BUSINESS_HEADER, context[0]);
@@ -47,6 +49,10 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
         try {
             root.put(BUSINESS_BODY, objectMapper.readValue(json, Map.class));
             template.process(root, stringWriter);
+            if (!resourceTemplate.getTemplateValidations().isOkResponseJsonToXml(stringWriter)) {
+                ErrorConverse errorValidations = objectMapper.readValue(stringWriter.toString(), ErrorConverse.class);
+                throw new ConverseException(errorValidations);
+            }
             return stringWriter.toString();
 
         } catch (IOException | TemplateException e) {
@@ -69,6 +75,10 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
 
             root.put(BUSINESS_RESPONSE, response);
             templateToUse.process(root, stringWriter);
+            if (!resourceTemplate.getTemplateValidations().isOkResponseXmlToObject(response)) {
+                ErrorConverse errorValidations = objectMapper.readValue(stringWriter.toString(), ErrorConverse.class);
+                throw new ConverseException(errorValidations);
+            }
             return objectMapper.readValue(stringWriter.toString(), target);
 
         } catch (IOException | TemplateException e) {
@@ -81,7 +91,7 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
     }
 
     private Template getTemplate(Map<?, ?> response, TemplateTransactionFreemarker.ResourceTemplate resourceTemplate) throws IOException {
-        return resourceTemplate.getTemplateValidations().isOkResponse(response) ? resourceTemplate.getTemplateOut() : resourceTemplate.getTemplateError();
+        return resourceTemplate.getTemplateValidations().isOkResponseXmlToObject(response) ? resourceTemplate.getTemplateXmlToJson() : resourceTemplate.getTemplateXmlToJsonError();
     }
 
 }

@@ -1,5 +1,6 @@
 package co.com.bancolombia;
 
+import co.com.bancolombia.api.TemplateValidations;
 import co.com.bancolombia.commons.config.Config;
 import co.com.bancolombia.commons.config.FreeMarkerConfig;
 import co.com.bancolombia.models.TemplateTransactionFreemarker;
@@ -18,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,8 +40,31 @@ class FreeMarkerConverseAsyncTest {
         Template templateIn = new Template(UUID.randomUUID().toString(), new StringReader("template in"), freeMarkerConfig);
         Template templateOut = new Template(UUID.randomUUID().toString(), new StringReader("{\"field1\":\"value1\"}"), freeMarkerConfig);
         Template templateError = new Template(UUID.randomUUID().toString(), new StringReader("{\"reason\":\"401\",\"domain\":\"na\",\"code\":\"401\",\"error \":\"error message\"}"), freeMarkerConfig);
-        TemplateTransactionFreemarker.ResourceTemplate resourceTemplateOut = TemplateTransactionFreemarker.ResourceTemplate.builder().templateIn(templateIn).templateOut(templateOut).templateError(templateError).templateValidations(response -> true).build();
-        TemplateTransactionFreemarker.ResourceTemplate resourceTemplateError = TemplateTransactionFreemarker.ResourceTemplate.builder().templateIn(templateIn).templateOut(templateOut).templateError(templateError).templateValidations(response -> false).build();
+        TemplateValidations templateValidationsTrue = new TemplateValidations() {
+            @Override
+            public boolean isOkResponseXmlToObject(Map<?, ?> object) {
+                return true;
+            }
+
+            @Override
+            public boolean isOkResponseJsonToXml(StringWriter xml) {
+                return true;
+            }
+        };
+
+        TemplateValidations templateValidationsFalse = new TemplateValidations() {
+            @Override
+            public boolean isOkResponseXmlToObject(Map<?, ?> object) {
+                return false;
+            }
+
+            @Override
+            public boolean isOkResponseJsonToXml(StringWriter xml) {
+                return false;
+            }
+        };
+        TemplateTransactionFreemarker.ResourceTemplate resourceTemplateOut = TemplateTransactionFreemarker.ResourceTemplate.builder().templateJsonToXml(templateIn).templateXmlToJson(templateOut).templateXmlToJsonError(templateError).templateValidations(templateValidationsTrue).build();
+        TemplateTransactionFreemarker.ResourceTemplate resourceTemplateError = TemplateTransactionFreemarker.ResourceTemplate.builder().templateJsonToXml(templateIn).templateXmlToJson(templateOut).templateXmlToJsonError(templateError).templateValidations(templateValidationsFalse).build();
         Mockito.lenient().when(templateTransactionFreemarker.get("1")).thenReturn(resourceTemplateOut);
         Mockito.lenient().when(templateTransactionFreemarker.get("2")).thenReturn(resourceTemplateError);
     }

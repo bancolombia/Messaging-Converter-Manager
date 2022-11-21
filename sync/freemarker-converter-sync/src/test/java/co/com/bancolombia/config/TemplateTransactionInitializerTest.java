@@ -8,6 +8,7 @@ import co.com.bancolombia.models.TemplateTransactionFreemarker;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.StringWriter;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,12 +25,19 @@ class TemplateTransactionInitializerTest {
             private static final String OK_CODE = "200";
 
             @Override
-            public boolean isOkResponse(Map<?, ?> response) {
-                return ((Map<?, ?>) response.get(STATUS)).get(CODE).equals(OK_CODE);
+            public boolean isOkResponseXmlToObject(Map<?, ?> object) {
+                return ((Map<?, ?>) object.get(STATUS)).get(CODE).equals(OK_CODE);
             }
+
+            @Override
+            public boolean isOkResponseJsonToXml(StringWriter xml) {
+                return true;
+            }
+
+
         };
         TemplateTransaction templateTransaction = TemplateTransaction.builder().build();
-        TemplateTransaction.ResourceTemplate resourceTemplate = TemplateTransaction.ResourceTemplate.builder().transactionName("todo tasks").templateValidations(templateValidations).channel("channel test").transaction("100").templateIn("template in").templateOut("template out").templateError("template error").build();
+        TemplateTransaction.ResourceTemplate resourceTemplate = TemplateTransaction.ResourceTemplate.builder().transactionName("todo tasks").templateValidations(templateValidations).channel("channel test").transaction("100").templateJsonToXml("template in").templateJsonToXmlError("template json to xml error").templateXmlToObject("template out").templateXmlToObjectError("template xml to object error").build();
         templateTransaction.put("100", resourceTemplate);
         templateTransaction.put("200", resourceTemplate);
         Config config = new Config();

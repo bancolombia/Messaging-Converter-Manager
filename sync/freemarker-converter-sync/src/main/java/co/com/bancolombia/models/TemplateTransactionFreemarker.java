@@ -22,9 +22,10 @@ public class TemplateTransactionFreemarker extends TreeMap<String, TemplateTrans
         private String transactionName;
         private String channel;
         private String transaction;
-        private Template templateIn;
-        private Template templateOut;
-        private Template templateError;
+        private Template templateJsonToXml;
+        private Template templateJsonToXmlError;
+        private Template templateXmlToJson;
+        private Template templateXmlToJsonError;
         private TemplateValidations templateValidations;
 
     }

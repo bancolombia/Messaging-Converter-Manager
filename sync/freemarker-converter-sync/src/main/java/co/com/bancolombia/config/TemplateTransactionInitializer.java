@@ -25,10 +25,10 @@ public class TemplateTransactionInitializer {
                         .transaction(resourceTemplate.getTransaction())
                         .channel(resourceTemplate.getChannel())
                         .transactionName(resourceTemplate.getTransactionName())
-                        .templateJsonToXml(new Template(UUID.randomUUID().toString(), resourceTemplate.getTemplateJsonToXml() != null ? new StringReader(resourceTemplate.getTemplateJsonToXml()) : new StringReader(resourceTemplate.getTemplateIn()), freeMarkerConfig))
-                        .templateJsonToXmlError(new Template(UUID.randomUUID().toString(), resourceTemplate.getTemplateJsonToXmlError() != null ? new StringReader(resourceTemplate.getTemplateJsonToXmlError()) : new StringReader(resourceTemplate.getTemplateIn()), freeMarkerConfig))
-                        .templateXmlToJson(new Template(UUID.randomUUID().toString(), resourceTemplate.getTemplateXmlToObject() != null ? new StringReader(resourceTemplate.getTemplateXmlToObject()) : new StringReader(resourceTemplate.getTemplateOut()), freeMarkerConfig))
-                        .templateXmlToJsonError(new Template(UUID.randomUUID().toString(), resourceTemplate.getTemplateXmlToObjectError() != null ? new StringReader(resourceTemplate.getTemplateXmlToObjectError()) : new StringReader(resourceTemplate.getTemplateError()), freeMarkerConfig))
+                        .templateJsonToXml(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateJsonToXml()), freeMarkerConfig))
+                        .templateJsonToXmlError(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateJsonToXmlError()), freeMarkerConfig))
+                        .templateXmlToJson(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateXmlToObject()), freeMarkerConfig))
+                        .templateXmlToJsonError(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateXmlToObjectError()), freeMarkerConfig))
                         .templateValidations(resourceTemplate.getTemplateValidations())
                         .build());
             } catch (IOException e) {

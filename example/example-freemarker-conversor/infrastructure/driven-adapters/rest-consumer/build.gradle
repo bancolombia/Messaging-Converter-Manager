@@ -2,5 +2,5 @@ dependencies {
     implementation project(':model')
     implementation 'org.springframework:spring-context'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'com.github.bancolombia:freemarker-converter-async:0.2.0'
+    implementation 'com.github.bancolombia:freemarker-converter-async:0.3.0'
 }

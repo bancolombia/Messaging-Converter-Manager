@@ -15,14 +15,22 @@ public class TemplateConfig {
     @Bean
     public TemplateTransaction templateTransaction() {
         TemplateValidations templateValidations = new TemplateValidations() {
+            @Override
+            public boolean isOkResponseXmlToObject(Map<?, ?> object) {
+                return ((Map<?, ?>) object.get(STATUS)).get(CODE).equals(OK_CODE);
+
+            }
+
+            @Override
+            public boolean isOkResponseJsonToXml(String json) {
+                return false;
+            }
+
             private static final String STATUS = "status";
             private static final String CODE = "code";
             private static final String OK_CODE = "200";
 
-            @Override
-            public boolean isOkResponse(Map<?, ?> response) {
-                return ((Map<?, ?>)  response.get(STATUS)).get(CODE).equals(OK_CODE);
-            }
+
         };
         TemplateTransaction templateTransaction = TemplateTransaction.builder().build();
         TemplateTransaction.ResourceTemplate resourceTemplate = TemplateTransaction.ResourceTemplate.builder()
@@ -30,9 +38,16 @@ public class TemplateConfig {
                 .templateValidations(templateValidations)
                 .channel("channel test")
                 .transaction("100")
-                .templateIn("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><number>123</number>")
-                .templateOut("{\"task\":{\"id\": \"123\",\"description\": \"this is a description\", \"name\":\"title\"}}")
-                .templateError("{\"reason\":\"401\",\"domain\":\"na\",\"code\":\"401\",\"message\":\"error message\"}")
+                .templateJsonToXml("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><number>123</number>")
+                .templateJsonToXmlError("<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\" ?>\\n\" +\n" +
+                        "                \"<root>\\n\" +\n" +
+                        "                \"  <reason>401</reason>\\n\" +\n" +
+                        "                \"  <domain>na</domain>\\n\" +\n" +
+                        "                \"  <code>401</code>\\n\" +\n" +
+                        "                \"  <error>error message</error>\\n\" +\n" +
+                        "                \"</root>")
+                .templateXmlToObject("{\"task\":{\"id\": \"123\",\"description\": \"this is a description\", \"name\":\"title\"}}")
+                .templateXmlToObjectError("{\"reason\":\"401\",\"domain\":\"na\",\"code\":\"401\",\"message\":\"error message\"}")
                 .build();
         templateTransaction.put("100", resourceTemplate);
         return templateTransaction;

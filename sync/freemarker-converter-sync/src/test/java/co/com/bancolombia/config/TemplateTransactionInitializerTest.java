@@ -42,7 +42,7 @@ class TemplateTransactionInitializerTest {
     }
 
     @Test
-    void templateTransactionFreemarkerWithDeprecatedAttributes() {
+    void shouldGenerateExceptionWithDeprecatedAttributes() {
         TemplateTransaction templateTransaction = TemplateTransaction.builder().build();
         TemplateTransaction.ResourceTemplate resourceTemplate = TemplateTransaction.ResourceTemplate.builder()
                 .transactionName("todo tasks")
@@ -57,8 +57,7 @@ class TemplateTransactionInitializerTest {
         templateTransaction.put("200", resourceTemplate);
         Config config = new Config();
         FreeMarkerConfig freeMarkerConfig = config.freeMarkerConfig();
-        TemplateTransactionFreemarker transactionFreemarker = initializer.templateTransactionFreemarker(templateTransaction, freeMarkerConfig);
-        assertEquals(2, transactionFreemarker.size());
+        assertThrows(NullPointerException.class, () -> initializer.templateTransactionFreemarker(templateTransaction, freeMarkerConfig));
     }
 
     @Test

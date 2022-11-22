@@ -25,9 +25,10 @@ public class TemplateTransactionInitializer {
                         .transaction(resourceTemplate.getTransaction())
                         .channel(resourceTemplate.getChannel())
                         .transactionName(resourceTemplate.getTransactionName())
-                        .templateIn(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateIn()), freeMarkerConfig))
-                        .templateOut(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateOut()), freeMarkerConfig))
-                        .templateError(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateError()), freeMarkerConfig))
+                        .templateJsonToXml(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateJsonToXml()), freeMarkerConfig))
+                        .templateJsonToXmlError(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateJsonToXmlError()), freeMarkerConfig))
+                        .templateXmlToJson(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateXmlToObject()), freeMarkerConfig))
+                        .templateXmlToJsonError(new Template(UUID.randomUUID().toString(), new StringReader(resourceTemplate.getTemplateXmlToObjectError()), freeMarkerConfig))
                         .templateValidations(resourceTemplate.getTemplateValidations())
                         .build());
             } catch (IOException e) {

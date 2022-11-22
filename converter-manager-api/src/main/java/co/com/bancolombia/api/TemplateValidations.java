@@ -1,9 +1,9 @@
 package co.com.bancolombia.api;
-
-
 import java.util.Map;
 
 public interface TemplateValidations {
-    boolean isOkResponse(Map<?, ?> response);
+    boolean isOkResponseXmlToObject(Map<?, ?> object);
+
+    boolean isOkResponseJsonToXml(String json);
 
 }

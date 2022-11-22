@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,29 +23,33 @@ import java.util.Map;
 public class FreeMarkerConverseSync implements ConverseDataGateway {
 
     private static final String BUSINESS_HEADER = "businessHeader";
-    private static final String DATE_FORMATTER = "dateFormatter";
     private static final String BUSINESS_BODY = "businessBody";
     private static final String BUSINESS_RESPONSE = "businessResponse";
 
-
     private final TemplateTransactionFreemarker templateTransaction;
     private final ObjectMapper objectMapper;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private final XmlMapper xmlMapper = new XmlMapper();
+
 
     @SneakyThrows
     @Override
     public String jsonToXml(String json, String templateCode, Object... context) {
-        Template template = getResourceTemplate(templateCode).getTemplateIn();
+        TemplateTransactionFreemarker.ResourceTemplate resourceTemplate = getResourceTemplate(templateCode);
+        Template templateToUse = getTemplate(json, resourceTemplate);
         Map<String, Object> root = new HashMap<>();
         if (context.length > 0) {
             root.put(BUSINESS_HEADER, context[0]);
         }
-        root.put(DATE_FORMATTER, formatter);
         StringWriter stringWriter = new StringWriter();
 
         try {
             root.put(BUSINESS_BODY, objectMapper.readValue(json, Map.class));
-            template.process(root, stringWriter);
+            templateToUse.process(root, stringWriter);
+            if (!resourceTemplate.getTemplateValidations().isOkResponseJsonToXml(stringWriter.toString())) {
+                Map<?, ?> response = xmlMapper.readValue(stringWriter.toString(), LinkedHashMap.class);
+                ErrorConverse errorValidations = objectMapper.convertValue(response, ErrorConverse.class);
+                throw new ConverseException(errorValidations);
+            }
             return stringWriter.toString();
 
         } catch (IOException | TemplateException e) {
@@ -57,7 +60,6 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
     @SneakyThrows
     @Override
     public <T> T xmlToObject(String xml, String templateCode, Class<T> target) {
-        XmlMapper xmlMapper = new XmlMapper();
         Map<String, Object> root = new HashMap<>();
         StringWriter stringWriter = new StringWriter();
 
@@ -69,6 +71,10 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
 
             root.put(BUSINESS_RESPONSE, response);
             templateToUse.process(root, stringWriter);
+            if (!resourceTemplate.getTemplateValidations().isOkResponseXmlToObject(response)) {
+                ErrorConverse errorValidations = objectMapper.readValue(stringWriter.toString(), ErrorConverse.class);
+                throw new ConverseException(errorValidations);
+            }
             return objectMapper.readValue(stringWriter.toString(), target);
 
         } catch (IOException | TemplateException e) {
@@ -80,8 +86,12 @@ public class FreeMarkerConverseSync implements ConverseDataGateway {
         return templateTransaction.get(templateCode);
     }
 
-    private Template getTemplate(Map<?, ?> response, TemplateTransactionFreemarker.ResourceTemplate resourceTemplate) throws IOException {
-        return resourceTemplate.getTemplateValidations().isOkResponse(response) ? resourceTemplate.getTemplateOut() : resourceTemplate.getTemplateError();
+    private Template getTemplate(Map<?, ?> response, TemplateTransactionFreemarker.ResourceTemplate resourceTemplate) {
+        return resourceTemplate.getTemplateValidations().isOkResponseXmlToObject(response) ? resourceTemplate.getTemplateXmlToJson() : resourceTemplate.getTemplateXmlToJsonError();
+    }
+
+    private Template getTemplate(String xml, TemplateTransactionFreemarker.ResourceTemplate resourceTemplate)  {
+        return resourceTemplate.getTemplateValidations().isOkResponseJsonToXml(xml) ? resourceTemplate.getTemplateJsonToXml() : resourceTemplate.getTemplateJsonToXmlError();
     }
 
 }

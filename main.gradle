@@ -3,7 +3,8 @@ allprojects {
     apply plugin: "jacoco"
     apply plugin: 'org.sonarqube'
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     repositories {
         mavenCentral()
@@ -56,9 +57,8 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
         testCompileOnly 'org.projectlombok:lombok'
-        testImplementation platform('org.junit:junit-bom:5.7.0')
         testImplementation 'org.junit.jupiter:junit-jupiter-engine'
-        testImplementation 'org.mockito:mockito-junit-jupiter:3.7.7'
+        testImplementation 'org.mockito:mockito-junit-jupiter'
     }
 
     test {

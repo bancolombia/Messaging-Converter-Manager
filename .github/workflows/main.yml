@@ -31,12 +31,14 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew clean build generateMergedReport
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       - name: copy the reportTest to codeCoverage
         run: cp build/reports/jacoco/generateMergedReport/generateMergedReport.xml jacoco.xml || echo "Code coverage failed"
       - name: Run sonarqube
         if: github.event.pull_request.head.repo.fork == false
         run: ./gradlew sonarqube --stacktrace
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:

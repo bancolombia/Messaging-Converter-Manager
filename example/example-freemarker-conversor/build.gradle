@@ -1,10 +1,10 @@
 buildscript {
 	ext {
-		cleanArchitectureVersion = '2.3.4'
-		springBootVersion = '2.6.7'
+		cleanArchitectureVersion = '3.28.0'
+		springBootVersion = '3.5.7'
 		sonarVersion = '3.0'
-		jacocoVersion = '0.8.5'
-        lombokVersion = '1.18.22'
+		jacocoVersion = '0.8.12'
+        lombokVersion = '1.18.38'
 	}
 }
 
@@ -30,3 +30,8 @@ sonarqube {
 }
 
 apply from: './main.gradle'
+
+// The root project has no application code; the executable jar is built by :app-service
+bootJar {
+    enabled = false
+}

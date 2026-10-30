@@ -13,7 +13,8 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
 
     compileJava.dependsOn validateStructure
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     dependencies {
 		implementation platform('software.amazon.awssdk:bom:2.17.182')
@@ -34,10 +35,10 @@ subprojects {
     jacocoTestReport {
         dependsOn test
         reports {
-            xml.enabled true
-            xml.destination file("${buildDir}/reports/jacoco.xml")
-            csv.enabled false
-            html.destination file("${buildDir}/reports/jacocoHtml")
+            xml.required = true
+            xml.outputLocation = layout.buildDirectory.file("reports/jacoco.xml")
+            csv.required = false
+            html.outputLocation = layout.buildDirectory.dir("reports/jacocoHtml")
         }
     }
 
@@ -45,7 +46,7 @@ subprojects {
 
 jacoco {
     toolVersion = "${jacocoVersion}"
-    reportsDir = file("$buildDir/reports")
+    reportsDirectory = layout.buildDirectory.dir("reports")
 }
 
 task jacocoMergedReport(type: JacocoReport) {
@@ -53,11 +54,11 @@ task jacocoMergedReport(type: JacocoReport) {
     additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
     sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
     classDirectories.setFrom files(subprojects.sourceSets.main.output)
-    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
+    executionData.setFrom files(subprojects.collect { it.layout.buildDirectory.file('jacoco/test.exec') })
     reports {
-        xml.enabled true
-        csv.enabled false
-        html.enabled true
+        xml.required = true
+        csv.required = false
+        html.required = true
     }
 }
 
@@ -67,5 +68,5 @@ tasks.withType(JavaCompile) {
     ]
 }
 tasks.named('wrapper') {
-    gradleVersion = '7.4.2'
+    gradleVersion = '8.14.3'
 }

@@ -3,7 +3,8 @@ allprojects {
     apply plugin: "jacoco"
     apply plugin: 'org.sonarqube'
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 
     repositories {
         mavenCentral()
@@ -56,9 +57,9 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
         testCompileOnly 'org.projectlombok:lombok'
-        testImplementation platform('org.junit:junit-bom:5.7.0')
         testImplementation 'org.junit.jupiter:junit-jupiter-engine'
-        testImplementation 'org.mockito:mockito-junit-jupiter:3.7.7'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        testImplementation 'org.mockito:mockito-junit-jupiter'
     }
 
     test {
@@ -73,10 +74,10 @@ subprojects {
     jacocoTestReport {
         dependsOn test
         reports {
-            xml.enabled true
-            xml.destination file("${buildDir}/reports/jacoco.xml")
-            csv.enabled false
-            html.destination file("${buildDir}/reports/jacocoHtml")
+            xml.required = true
+            xml.outputLocation = layout.buildDirectory.file("reports/jacoco.xml")
+            csv.required = false
+            html.outputLocation = layout.buildDirectory.dir("reports/jacocoHtml")
         }
     }
     compileJava {
@@ -117,8 +118,11 @@ subprojects {
     check.dependsOn dependencyCheckAggregate
 
     dependencyCheck {
-        format = 'JSON'
         formats = ['JSON']
+        nvd {
+            // NVD requires an API key to download vulnerability data (set NVD_API_KEY in CI)
+            apiKey = System.getenv('NVD_API_KEY')
+        }
     }
 
     publishing {
@@ -169,14 +173,14 @@ task generateMergedReport(type: JacocoReport) {
     additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
     sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
     classDirectories.setFrom files(subprojects.sourceSets.main.output)
-    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
+    executionData.setFrom files(subprojects.collect { it.layout.buildDirectory.file('jacoco/test.exec') })
     reports {
-        xml.enabled true
-        csv.enabled false
-        html.enabled true
+        xml.required = true
+        csv.required = false
+        html.required = true
     }
 }
 
 tasks.named('wrapper') {
-    gradleVersion = '7.4.2'
+    gradleVersion = '8.14.3'
 }

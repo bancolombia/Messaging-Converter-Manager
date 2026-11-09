@@ -29,7 +29,11 @@ jobs:
           java-version: 17
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - name: Skip dependency-check on fork pull requests
+        if: github.event.pull_request.head.repo.fork == true
+        run: echo "::notice::Pull request from a fork; secrets are not available, so dependencyCheckAggregate is skipped"
       - name: Check NVD API key
+        if: github.event.pull_request.head.repo.fork != true
         run: |
           if [ -z "$NVD_API_KEY" ]; then
             echo "::warning::NVD_API_KEY is empty; dependency-check will run without an API key"
@@ -37,6 +41,7 @@ jobs:
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       - name: Cache NVD database
+        if: github.event.pull_request.head.repo.fork != true
         uses: actions/cache@v4
         with:
           path: ~/.gradle/dependency-check-data
@@ -44,7 +49,7 @@ jobs:
           restore-keys: |
             nvd-${{ runner.os }}-
       - name: Build with Gradle
-        run: ./gradlew clean build generateMergedReport
+        run: ./gradlew clean build generateMergedReport ${{ github.event.pull_request.head.repo.fork == true && '-x dependencyCheckAggregate' || '' }}
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       - name: copy the reportTest to codeCoverage

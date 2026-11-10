@@ -57,7 +57,7 @@ jobs:
       - name: Run sonar
         if: github.event.pull_request.head.repo.fork == false
         run: ./gradlew sonar --stacktrace
-          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.token=${{ secrets.SONAR_TOKEN_OPENSOURCE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:

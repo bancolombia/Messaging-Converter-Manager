@@ -28,6 +28,13 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: gradle
+      - name: Cache Gradle build cache
+        uses: actions/cache@v6
+        with:
+          path: build-cache
+          key: gradle-build-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties', 'gradle.properties', 'settings.gradle', '**/*.gradle') }}
+          restore-keys: |
+            gradle-build-${{ runner.os }}-
       - name: Skip dependency-check on fork pull requests
         if: github.event.pull_request.head.repo.fork == true
         run: echo "::notice::Pull request from a fork; secrets are not available, so dependencyCheckAggregate is skipped"
@@ -70,6 +77,13 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: gradle
+      - name: Cache Gradle build cache
+        uses: actions/cache@v6
+        with:
+          path: build-cache
+          key: gradle-build-${{ runner.os }}-${{ hashFiles('**/gradle-wrapper.properties', 'gradle.properties', 'settings.gradle', '**/*.gradle') }}
+          restore-keys: |
+            gradle-build-${{ runner.os }}-
       - name: Prepare gpg key
         run: |
           mkdir -p ~/.gradle/

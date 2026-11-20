@@ -27,6 +27,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: gradle
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Skip dependency-check on fork pull requests
@@ -56,8 +57,7 @@ jobs:
         run: cp build/reports/jacoco/generateMergedReport/generateMergedReport.xml jacoco.xml || echo "Code coverage failed"
       - name: Run sonar
         if: github.event.pull_request.head.repo.fork == false
-        run: ./gradlew sonar --stacktrace
-          -Dsonar.token=${{ secrets.SONAR_TOKEN_OPENSOURCE }}
+        run: ./gradlew sonar --stacktrace -Dsonar.token=${{ secrets.SONAR_TOKEN_OPENSOURCE }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:
@@ -71,6 +71,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: gradle
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Prepare gpg key

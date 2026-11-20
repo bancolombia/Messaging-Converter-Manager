@@ -1,3 +1,9 @@
+buildCache {
+    local {
+        directory = new File(rootDir, 'build-cache')
+    }
+}
+
 rootProject.name = 'MessagingConverterManager'
 
 FileTree buildFiles = fileTree(rootDir) {

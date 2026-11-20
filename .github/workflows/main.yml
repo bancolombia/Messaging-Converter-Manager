@@ -28,8 +28,6 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: gradle
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
       - name: Skip dependency-check on fork pull requests
         if: github.event.pull_request.head.repo.fork == true
         run: echo "::notice::Pull request from a fork; secrets are not available, so dependencyCheckAggregate is skipped"
@@ -72,8 +70,6 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: gradle
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
       - name: Prepare gpg key
         run: |
           mkdir -p ~/.gradle/
